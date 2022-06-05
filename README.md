@@ -16,3 +16,14 @@ DATA2	GPIO 12 --- use for can TX
 DATA3	GPIO 13 --- use for can RX
 
 GPIO 1 and GPIO 3 are the serial pins (TX and RX, respectively). Because the ESP32-CAM doesn’t have a built-in programmer, you need to use these pins to communicate with the board and upload code. 
+
+
+
+ESP32 gauges
+/*********
+  Rui Santos
+  Complete instructions at https://RandomNerdTutorials.com/esp32-web-server-gauges/
+  
+  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files.
+  The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+*********/

@@ -3,6 +3,7 @@
 #include <WebServer.h>
 #include <ESPmDNS.h>
 #include <Update.h>
+#include <CAN.h>
 
 const char* host = "OtaJagGauge";
 const char* ssid = "intothesea";
@@ -168,9 +169,56 @@ void setup(void) {
     }
   });
   server.begin();
+
+  CAN.setPins(13, 12);
+   // start the CAN bus at 500 kbps
+  if (!CAN.begin(500E3)) {
+    Serial.println("Starting CAN failed!");
+  }
+  else{
+      // register the receive callback
+  CAN.onReceive(onReceive);
+  }
+
 }
 
 void loop(void) {
   server.handleClient();
   delay(1);
+
+
+}
+
+
+void onReceive(int packetSize) {
+  // received a packet
+  Serial.print("Received ");
+
+  if (CAN.packetExtended()) {
+    Serial.print("extended ");
+  }
+
+  if (CAN.packetRtr()) {
+    // Remote transmission request, packet contains no data
+    Serial.print("RTR ");
+  }
+
+  Serial.print("packet with id 0x");
+  Serial.print(CAN.packetId(), HEX);
+
+  if (CAN.packetRtr()) {
+    Serial.print(" and requested length ");
+    Serial.println(CAN.packetDlc());
+  } else {
+    Serial.print(" and length ");
+    Serial.println(packetSize);
+
+    // only print packet data for non-RTR packets
+    while (CAN.available()) {
+      Serial.print((char)CAN.read());
+    }
+    Serial.println();
+  }
+
+  Serial.println();
 }
